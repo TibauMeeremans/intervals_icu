@@ -30,8 +30,9 @@ async function icu(method, path, { query, body } = {}) {
   try { return JSON.parse(text); } catch { return text; }
 }
 
-const today = () => new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10); // Asia/Jakarta
-const daysAgo = (n) => new Date(Date.now() + 7 * 3600e3 - n * 86400e3).toISOString().slice(0, 10);
+const fmt = (d) => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Brussels" }).format(d);
+   const today = () => fmt(new Date());
+   const daysAgo = (n) => fmt(new Date(Date.now() - n * 86400e3));
 
 const ACT_FIELDS = [
   "id", "start_date_local", "type", "name", "distance", "moving_time", "elapsed_time",
@@ -259,7 +260,7 @@ async function handle(msg) {
         capabilities: { tools: { listChanged: false } },
         serverInfo: SERVER_INFO,
         instructions:
-          "Intervals.icu training data for the athlete. Units: distance meters, time seconds, speed/pace m/s. Dates are local (Asia/Jakarta). Form (TSB) = CTL - ATL. Prefer list_* tools with date ranges; use api_get for anything else.",
+          "Intervals.icu training data for the athlete. Units: distance meters, time seconds, speed/pace m/s. Dates are local (Europe/Brussels). Form (TSB) = CTL - ATL. Prefer list_* tools with date ranges; use api_get for anything else.",
       });
     }
     case "ping":
